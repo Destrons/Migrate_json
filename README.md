@@ -3,34 +3,28 @@
 
 Estrutura inicial: 
 
-/migrate_json
-│── backend/  (Laravel)
-│   ├── app/            # Código da aplicação 
-│   ├── bootstrap/      # Inicialização do framework
-│   ├── config/         # Arquivos de configuração
-│   ├── database/       # Migrations, Factories e Seeders
-│   ├── public/         # Arquivos públicos 
-│   ├── resources/      # Views Blade
-│   ├── routes/         # Arquivos de rotas 
-│   ├── storage/        # Logs, Cache e Uploads
-│   ├── tests/          # Testes unitários e de integração
-│   ├── vendor/         # Dependências instaladas pelo Composer
-│   ├── .env            # Variáveis de ambiente
-│   ├── artisan         # CLI do Laravel
-│   ├── composer.json   # Dependências PHP
-│   ├── package.json    # Dependências JS
-│
-│── frontend/  (React)
-│   ├── public/         # Arquivos públicos 
-│   ├── src/            # Código-fonte do React
-│   │   ├── assets/     # Imagens, ícones, estilos globais
-│   │   ├── components/ # Componentes reutilizáveis
-│   │   ├── pages/      # Páginas principais do app
-│   │   ├── services/   # Conexão com a API (fetch, axios)
-│   │   ├── context/    # Gerenciamento de estado (Context API)
-│   │   ├── hooks/      # Hooks personalizados
-│   │   ├── App.jsx     # Componente principal
-│   │   ├── main.jsx    # Ponto de entrada do React
-│   ├── .env            # Variáveis de ambiente
-│   ├── package.json    # Dependências do projeto
-│   ├── vite.config.js  # Configuração do Vite
+backend-laravel/
+├── app/
+│   ├── Http/Controllers/  # Controladores da API
+│   ├── Models/            # Modelos Eloquent
+├── database/
+│   ├── migrations/        # Arquivos de migração do banco
+│   ├── seeders/           # Seeders para popular o banco
+├── routes/
+│   ├── api.php            # Rotas da API
+├── config/                # Configurações do Laravel
+├── .env                   # Configurações do ambiente
+├── composer.json          # Dependências do Laravel
+├── artisan                # CLI do Laravel
+
+
+frontend-react/
+├── src/
+│   ├── components/        # Componentes reutilizáveis
+│   ├── pages/             # Páginas do projeto
+│   ├── services/          # Conexão com a API do Laravel
+│   ├── App.js             # Arquivo principal
+├── public/                # Arquivos estáticos
+├── package.json           # Dependências do React
+├── .env                   # Configurações do ambiente
+├── index.js               # Ponto de entrada
