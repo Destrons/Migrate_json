@@ -24,8 +24,22 @@ RUN composer install --no-dev --optimize-autoloader
 # Permissões para o storage e cache
 RUN chmod -R 777 storage bootstrap/cache
 
+# Comando para instalção do sodium
+RUN apt update && apt install -y libsodium-dev && docker-php-ext-install sodium
+
+# Dá as permissões corretas
+RUN chown -R www-data:www-data /var/www/html && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+
+# Define a configuração do VirtualHost
+COPY apache/000-default.conf /etc/apache2/sites-available/000-default.conf
+
 # Expõe a porta 80
 EXPOSE 80
 
 # Comando de inicialização
 CMD ["apache2-foreground"]
+
+RUN php artisan migrate
+
+
+
