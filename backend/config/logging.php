@@ -73,6 +73,19 @@ return [
             'replace_placeholders' => true,
         ],
 
+        'channels' => [
+            'stack' => [
+            'driver' => 'stack',
+            'channels' => ['daily'],
+        ],
+
+        'daily' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/migracao.log'),
+            'level' => 'info',
+            'days' => 7, // Mantém logs por 7 dias antes de excluir
+        ],
+
         'slack' => [
             'driver' => 'slack',
             'url' => env('LOG_SLACK_WEBHOOK_URL'),
@@ -129,4 +142,6 @@ return [
 
     ],
 
+]
 ];
+

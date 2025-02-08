@@ -1,5 +1,5 @@
 services:
-    laravel.test:
+    laravel:
         build:
             context: ./vendor/laravel/sail/runtimes/8.4
             dockerfile: Dockerfile
@@ -23,6 +23,7 @@ services:
             - sail
         depends_on:
             - mysql
+
     mysql:
         image: 'mysql/mysql-server:8.0'
         ports:
@@ -40,16 +41,25 @@ services:
         networks:
             - sail
         healthcheck:
-            test:
-                - CMD
-                - mysqladmin
-                - ping
-                - '-p${DB_PASSWORD}'
-            retries: 3
+            test: ["CMD", "mysqladmin", "ping", "-p${DB_PASSWORD}"]
+            retries: 5
             timeout: 5s
+
+    scheduler:
+        build: .
+        container_name: laravel_scheduler
+        working_dir: /var/www
+        command: ["/bin/sh", "-c", "sleep 10 && php artisan migrate && php artisan schedule:work"]
+        depends_on:
+            mysql:
+                condition: service_healthy  # Wait for MySQL
+        networks:
+            - sail
+
 networks:
     sail:
         driver: bridge
+
 volumes:
     sail-mysql:
         driver: local

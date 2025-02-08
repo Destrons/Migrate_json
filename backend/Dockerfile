@@ -41,5 +41,7 @@ CMD ["apache2-foreground"]
 
 RUN php artisan migrate
 
+RUN php artisan schedule:work
+
 
 
