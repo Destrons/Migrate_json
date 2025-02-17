@@ -35,6 +35,14 @@ services:
       - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
+  
+  worker:
+    build: .
+    container_name: laravel_worker
+    working_dir: /var/www
+    command: ["php", "artisan", "queue:work"]
+    depends_on:
+      - app
+    networks:
+      - laravel_network
 
-volumes:
-  db_data:
