@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 
 class Item extends Model
@@ -20,13 +21,13 @@ class Item extends Model
         $cacheKey = 'items_cache';
 
         if (Cache::has($cacheKey)) {
-            $this->info('Dados já armazenados no cache.');
+            Log::error('Dados já armazenados no cache.');
             return;
         }
 
         $response = Http::get($url);
         if ($response->failed()) {
-            $this->error('Falha ao buscar dados da API');
+            Log::error('Falha ao buscar dados da API');
             return;
         }
 
@@ -39,7 +40,7 @@ class Item extends Model
         }
 
         Cache::put($cacheKey, true, now()->addHours(24));
-        $this->info('Dados sincronizados com sucesso!');
+        Log::info('Dados sincronizados com sucesso!');
     }
     
 }

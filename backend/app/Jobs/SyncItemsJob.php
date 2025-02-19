@@ -12,8 +12,9 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use App\Models\Post;
+use App\Models\Execucao;
 
-class ValidarEPopularItems implements ShouldQueue
+class SyncItemsJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -28,6 +29,12 @@ class ValidarEPopularItems implements ShouldQueue
         while ($hasMoreData) {
             $cacheKey = "api_data_page_{$page}";
 
+            if (Cache::has($cacheKey)) {
+                Log::info("📌 Página {$page} carregada do cache.");
+            } else {
+                Log::info("🌍 Página {$page} carregada da URL.");
+            }
+
             // Obtém do cache ou busca da API
             $data = Cache::remember($cacheKey, $ttl, function () use ($page) {
                 $response = Http::get("https://jsonplaceholder.typicode.com/todos/{$page}");
@@ -37,20 +44,41 @@ class ValidarEPopularItems implements ShouldQueue
                     return null;
                 }
 
-                return $response->json();
+                $jsonData = $response->json();
+
+                if (!is_array($jsonData)) {
+                    Log::error("❌ Resposta inesperada da API na página {$page}: " . json_encode($jsonData));
+                    return null;
+                }
+
+                Log::info("✅ Dados da API para página {$page} armazenados no cache.");
+                return $jsonData;
             });
 
-            if (!$data || empty($data)) {
-                Log::warning("⚠️ Nenhum dado encontrado na página {$page}, encerrando...");
+            // Verifica se a API retornou um inteiro ou um formato inesperado
+            if (!is_array($data) || empty($data)) {
+                Log::warning("⚠️ Nenhum dado válido encontrado na página {$page}, encerrando...");
+                $hasMoreData = false; // 🔹 Garante que o loop para corretamente
                 break;
             }
 
+            // Se for um objeto único, transforma em um array
+            if ($this->isAssoc($data)) {
+                $data = [$data];
+            }
+
             foreach ($data as $item) {
+                // Validação extra antes de acessar os índices
+                if (!isset($item['id'], $item['title'], $item['completed'])) {
+                    Log::error("❌ Item inválido na página {$page}: " . json_encode($item));
+                    continue; 
+                }
+
                 Post::updateOrCreate(
-                    ['id' => $item['id'] ?? null], // Evita erro se 'id' não existir
+                    ['id' => $item['id']],
                     [
-                        'title' => $item['title'] ?? 'Título Padrão',
-                        'body' => $item['completed'] ?? 'Conteúdo Padrão'
+                        'title' => $item['title'],
+                        'body' => $item['completed']
                     ]
                 );
             }
@@ -59,9 +87,18 @@ class ValidarEPopularItems implements ShouldQueue
             $page++;
 
             // Simulando paginação da API
-            $hasMoreData = $page <= 10;
+            if ($page > 201) {
+                $hasMoreData = false;
+            }
+
         }
 
         Log::info('✅ Validação e atualização concluída!');
+
+    }
+
+    private function isAssoc(array $array): bool
+    {
+        return array_keys($array) !== range(0, count($array) - 1);
     }
 }

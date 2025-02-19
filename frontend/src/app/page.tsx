@@ -1,30 +1,15 @@
-'use client';
-import { useEffect, useState } from 'react';
-import api from '../utils/api';
-import ItemAutocomplete from '../components/ItemAutocomplete';
-import { Container, Typography } from '@mui/material';
+import styles from "./page.module.css";
+import PostList from "@/components/PostList";
 
 export default function Home() {
-  const [items, setItems] = useState([]);
-
-  useEffect(() => {
-      api.get('/items')
-          .then((response) => setItems(response.data.data))
-          .catch((error) => console.error('Erro ao buscar itens:', error));
-  }, []);
-
   return (
-      <main>
-          <h1>Lista de Itens</h1>
-          <ul>
-              {items.map((item: any) => (
-                  <li key={item.id}>{item.title}</li>
-              ))}
-          </ul>
-          <Container>
-            <Typography variant="h4" gutterBottom>Buscar Itens</Typography>
-            <ItemAutocomplete />
-          </Container>
+    <div className={styles.page}>
+      <main className={styles.main}>
+          <h1 className="text-4xl font-bold">Bem-vindo ao Next.js</h1>
+          <PostList/>        
       </main>
+      <footer className={styles.footer}>
+      </footer>
+    </div>
   );
 }

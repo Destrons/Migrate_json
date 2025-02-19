@@ -12,13 +12,12 @@
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@mui/material": "^6.4.4",
-    "@tanstack/react-query": "^5.66.0",
     "axios": "^1.7.9",
-    "lodash": "^4.17.21",
     "lodash.debounce": "^4.0.8",
     "next": "15.1.7",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "react-hot-toast": "^2.5.2"
   },
   "devDependencies": {
     "@types/lodash.debounce": "^4.0.9",

@@ -10,6 +10,5 @@ class Post extends Model
     use HasFactory;
 
     protected $table = 'items'; 
-
     protected $fillable = ['id', 'title', 'body']; 
 }

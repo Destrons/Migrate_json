@@ -3,15 +3,18 @@
 namespace App\Jobs;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
+
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
+
 use App\Models\Post;
+use App\Models\Execucao;
 
 class ValidarEPopularItems implements ShouldQueue
 {
@@ -63,14 +66,21 @@ class ValidarEPopularItems implements ShouldQueue
                 break;
             }
 
-            foreach ($data as $item) {
-                Post::updateOrCreate(
-                    ['id' => $item['id'] ?? null], // Evita erro se 'id' não existir
-                    [
-                        'title' => $item['title'] ?? 'Título Padrão',
-                        'body' => $item['completed'] ?? 'Conteúdo Padrão'
-                    ]
-                );
+            if (!is_array($data)) {
+                Log::error("❌ Resposta inesperada da API: " . json_encode($data));
+                break;
+            }
+
+            if (!isset($data[0])) {
+                $data = [$data];
+            }
+
+        foreach ($data as $item) {
+                Post::Create([
+                    'id' => $item['id'],
+                    'title' => $item['title'],
+                    'body' => $item['completed']                    
+                ]);
             }
 
             Log::info("✅ Página {$page} processada com sucesso.");

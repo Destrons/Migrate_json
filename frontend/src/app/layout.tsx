@@ -1,29 +1,31 @@
-'use client';
-import { ReactNode } from 'react';
-import { CssBaseline, ThemeProvider } from '@mui/material';
-import theme from './theme';
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+"use client";
+import { ReactNode } from "react";
+import { CssBaseline, ThemeProvider } from "@mui/material";
+import theme from "../styles/theme";
+import "../styles/globals.css";
+import Header from "../components/Header";
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-      <html lang="en">
-          <body>
-              <ThemeProvider theme={theme}>
-                  <CssBaseline />
-                  {children}
-              </ThemeProvider>
-          </body>
-      </html>
+    <html lang="pt">
+      <body>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <Header />
+          <main style={styles.main}>{children}</main>
+        </ThemeProvider>
+      </body>
+    </html>
   );
 }
+
+// Estilos para evitar sobreposição do cabeçalho
+const styles = {
+  main: {
+    marginTop: "80px",
+    padding: "20px",
+    display: "flex",
+    flexDirection: "column" as "column", // Corrigido!
+    alignItems: "center" as "center", // Corrigido!
+  },
+};
