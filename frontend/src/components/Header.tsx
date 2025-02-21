@@ -1,9 +1,14 @@
 import React from "react";
 import ItemAutocomplete from "./ItemAutocomplete";
 import Dashboard from "./Dashboard";
-import { AppBar, Toolbar, Typography, Box } from "@mui/material";
+import { Item } from "./types";
+import { AppBar, Toolbar, Box } from "@mui/material";
 
-const Header: React.FC = () => {
+interface HeaderProps {
+  setFilteredItems: (items: Item[]) => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ setFilteredItems }: { setFilteredItems: (items: Item[]) => void }) => {
   return (
     <AppBar position="fixed" sx={styles.appBar}>
       <Toolbar sx={styles.toolbar}>
@@ -12,7 +17,9 @@ const Header: React.FC = () => {
           <img src="./logo.svg" alt="Logo" style={styles.logo} />
         </Box>
         {/* Campo de busca */}
-        <ItemAutocomplete />
+        <Box sx={{ width: "400px" }}>
+          <ItemAutocomplete setFilteredItems={setFilteredItems} />
+        </Box>
         {/* Status da sincronização */}
         <Dashboard />
       </Toolbar>
@@ -38,7 +45,7 @@ const styles = {
     alignItems: "center",
   },
   logo: {
-    height: "50px", // 🔹 Aumentei o tamanho da logo
+    height: "50px",
     marginRight: "10px",
   },
 };

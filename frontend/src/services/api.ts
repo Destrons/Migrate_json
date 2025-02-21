@@ -1,6 +1,6 @@
 import axios from "axios";
 
-// ✅ Definição da URL base da API (ajuste se necessário)
+// ✅ Definição da URL base da API
 const API_URL = "http://127.0.0.1:8000/api";
 
 // ✅ Configuração do Axios para chamadas reutilizáveis
@@ -11,14 +11,14 @@ const api = axios.create({
   },
 });
 
-// ✅ Função para obter a lista de itens do banco
-export const getItems = async () => {
+// ✅ Função para obter a lista de itens com paginação
+export const getItems = async (page: number = 1) => {
   try {
-    const response = await api.get("/items");
+    const response = await api.get(`/items?page=${page}`);
     return response.data;
   } catch (error) {
     console.error("❌ Erro ao buscar itens:", error);
-    return [];
+    return { data: [], last_page: 1 }; // Retorna um objeto seguro caso dê erro
   }
 };
 
@@ -29,7 +29,7 @@ export const searchItems = async (query: string) => {
     return response.data;
   } catch (error) {
     console.error("❌ Erro ao buscar itens:", error);
-    return [];
+    return { data: [] };
   }
 };
 
